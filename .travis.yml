@@ -1,0 +1,20 @@
+language: php
+php: 
+  - '5.5'
+  - '5.6'
+#  - '7.0'
+#  - 'hhvm'
+#  - 'nightly'
+env:
+  global:
+    - DBNAME='variation' 
+    - DBUSER='deploy' 
+    - DBPASS='variation'
+services:
+  - postgresql
+addons:
+  postgresql: "9.1"
+install: 
+  - composer install
+  - ./scripts/install.sh
+script: ./vendor/bin/phpunit tests/
