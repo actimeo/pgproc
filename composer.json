@@ -2,7 +2,7 @@
     "name": "actimeo/pgproc",
     "description": "Call PostgreSQL PL/PgSQL procedures from PHP",
     "require": {
-        "php": "^5.5.0"
+        "php": "^5.5.0 || ^7.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^4.8"
