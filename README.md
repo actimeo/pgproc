@@ -25,3 +25,4 @@ Usage
 ```bash
 $ cat vendor/actimeo/pgproc/tests/tests.sql | psql -h host -U login -W dbname
 ```
+
