@@ -408,21 +408,6 @@ class PgSchema {
     return $sqlvalue;
   }
 
-  public function get_pgtype ($oid) {
-    if (isset ($this->pgtypes[$oid]))
-      return $this->pgtypes[$oid];
-    else {
-      $query2 = "SELECT nspname, typname FROM pg_type INNER JOIN pg_namespace on pg_type.typnamespace = pg_namespace.oid WHERE pg_type.oid=".$oid;
-      if ($res2 = $this->pgproc_query ($query2)) {
-	if ($row2 = pg_fetch_array ($res2)) {
-	  $ret = $row2['nspname'] . '.' . $row2['typname'];
-	  $this->pgtypes[$oid] = $ret;
-	  return $ret;
-	}
-      }
-    }
-  }
-
   public function get_pgtype_and_schema ($oid) {
     if (isset ($this->pgtypesWithSchema[$oid]))
       return $this->pgtypesWithSchema[$oid];
