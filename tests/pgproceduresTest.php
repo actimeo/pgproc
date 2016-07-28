@@ -383,4 +383,17 @@ class pgproceduresTest extends PHPUnit_Framework_TestCase {
     $ret = $this->base->pgtests_get_one();
     $this->assertEquals(1, $ret);
   }
+
+  public function testExecuteSQL() {
+    $ret = $this->base->execute_sql('SELECT 1');
+    $this->assertEquals('1', $ret[0][0]);
+  }
+
+  /**
+     @expectedException \actimeo\pgproc\PgProcException
+  */
+  public function testExecuteSQLerror() {
+    $ret = $this->base->execute_sql('SELECT a');
+    print_r($ret);
+  }
 }
