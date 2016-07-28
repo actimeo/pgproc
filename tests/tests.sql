@@ -348,3 +348,13 @@ BEGIN
   RETURN ret;
 END;
 $$;
+
+CREATE OR REPLACE FUNCTION public.pgtests_get_one()
+RETURNS integer
+LANGUAGE plpgsql
+IMMUTABLE
+as $$
+BEGIN
+  RETURN 1;
+END;
+$$;

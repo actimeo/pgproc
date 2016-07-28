@@ -378,4 +378,9 @@ class pgproceduresTest extends PHPUnit_Framework_TestCase {
     $cnt = $this->base->pgtests->content_get($id);
     $this->assertEquals($cnt['cnt_id'], 0);
   }
+
+  public function testPublicFunction() {
+    $ret = $this->base->pgtests_get_one();
+    $this->assertEquals(1, $ret);
+  }
 }
