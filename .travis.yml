@@ -19,6 +19,6 @@ install:
   - ./scripts/install.sh
 script: 
   - mkdir -p build/logs
-  - ./vendor/bin/phpunit --coverage-clover tests/
+  - ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml tests/
 after_success:
   - travis_retry php vendor/bin/coveralls -v
