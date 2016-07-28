@@ -11,11 +11,14 @@ $ composer require actimeo/pgproc
 
  -  Create a database
 
- - Import some code in your database:
+ - Import necessary code in your database:
 ```bash
 $ cat vendor/actimeo/pgproc/src/sql/pgprocedures.sql | psql -h host -U login -W dbname
 $ cat vendor/actimeo/pgproc/src/plpgsql/all.sql | psql -h host -U login -W dbname
 ```
+
+Usage
+==
 
  - Write some procedures in your database, for example:
 
