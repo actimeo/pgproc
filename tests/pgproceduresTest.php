@@ -31,7 +31,7 @@ class pgproceduresTest extends PHPUnit_Framework_TestCase {
   }
 
   protected function tearDown() {
-    $this->base->rollback();
+    $this->base->commit();
     unset($this->base);
   }
   
@@ -361,5 +361,21 @@ class pgproceduresTest extends PHPUnit_Framework_TestCase {
 
   public function testReturnsEmptyArray() {
     $val = $this->base->pgtests->test_returns_empty_array();
+  }
+
+  public function testContentAdd() {
+    $name1 = 'a name';
+    $name2 = 'another name';
+    $id1 = $this->base->pgtests->content_add($name1);
+    $id2 = $this->base->pgtests->content_add($name2);
+    $this->assertEquals($id1 + 1, $id2);
+  }
+
+  public function testRollback() {
+    $name = 'a name';
+    $id = $this->base->pgtests->content_add($name);
+    $this->base->rollback();
+    $cnt = $this->base->pgtests->content_get($id);
+    $this->assertEquals($cnt['cnt_id'], 0);
   }
 }

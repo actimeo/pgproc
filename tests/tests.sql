@@ -1,5 +1,11 @@
 CREATE SCHEMA pgtests;
 
+DROP TABLE IF EXISTS pgtests.content;
+CREATE TABLE pgtests.content (
+  cnt_id serial PRIMARY KEY,
+  cnt_name text NOT NULL
+);
+
 DROP TYPE IF EXISTS pgtests.enumtype CASCADE;
 CREATE TYPE pgtests.enumtype AS ENUM ('val1', 'val2', 'val3');
 
@@ -314,4 +320,31 @@ LANGUAGE SQL
 IMMUTABLE
 AS $$
   SELECT '{}'::integer[];
+$$;
+
+CREATE OR REPLACE FUNCTION pgtests.content_add(prm_name text) 
+RETURNS integer
+LANGUAGE plpgsql
+VOLATILE
+AS $$
+DECLARE
+  ret integer;
+BEGIN
+  INSERT INTO pgtests.content (cnt_name) VALUES (prm_name)
+    RETURNING cnt_id INTO ret;
+  RETURN ret;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION pgtests.content_get(prm_id integer)
+RETURNS pgtests.content
+LANGUAGE plpgsql
+STABLE
+AS $$
+DECLARE
+  ret pgtests.content;
+BEGIN
+  SELECT * INTO ret FROM pgtests.content WHERE cnt_id = prm_id;
+  RETURN ret;
+END;
 $$;

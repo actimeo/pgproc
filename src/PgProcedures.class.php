@@ -131,23 +131,7 @@ class PgProcedures {
   }
   
   
-  public function execute_sql ($sql) {
-    $ret = array ();
-    $res = $this->pgproc_query ($sql);
-    while ($row = pg_fetch_array ($res)) {
-      $ret[] = $row;
-    }
-    return $ret;
-  }
-
   private function pgproc_query ($q) {
-    try {
-      $ret = pg_query ($this->handler, $q);
-      if ($ret === false)
-      	throw new PgProcException (pg_last_error($this->base->handler));
-      return $ret;
-    } catch (\Exception $e) {
-      throw new PgProcException (pg_last_error($this->handler));
-    }
+    $ret = pg_query ($this->handler, $q);
   }
 }
