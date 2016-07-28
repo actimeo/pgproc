@@ -11,12 +11,6 @@ use \actimeo\pgproc\PgProcException;
 
 class pgproceduresTest extends PHPUnit_Framework_TestCase {
   
-  private static $base;
-  private static $pgHost;
-  private static $pgUser;
-  private static $pgPass;
-  private static $pgDatabase;
-
   protected function setUp() {
 
     // Get connection params
