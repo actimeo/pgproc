@@ -116,21 +116,6 @@ class PgProcedures {
   public function rollback () {
     $this->pgproc_query ('ROLLBACK');    
   }
-
-  public function get_arguments ($schema_name, $function_name) {
-    $rets = $this->pgprocedures->search_arguments ($schema_name, $function_name);
-    if (count ($rets)) {
-      foreach ($rets as &$ret) {
-	if (count ($ret['argtypes'])) {
-	  foreach ($ret['argtypes'] as &$argtype) {	  
-	    $argtype = $this->pgprocedures->get_pgtype ($argtype);
-	  }
-	}
-      }
-    }
-    return $rets;
-  }
-
   
   /***********
    * PRIVATE *
