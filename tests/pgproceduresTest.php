@@ -27,11 +27,11 @@ class pgproceduresTest extends PHPUnit_Framework_TestCase {
     // Create object
     $this->base = new PgProcedures ($this->pgHost, $this->pgUser, $this->pgPass, $this->pgDatabase);
     $this->assertNotNull($this->base);    
-    $this->startTransaction();
+    $this->base->startTransaction();
   }
 
   protected function tearDown() {
-    $this->rollback();
+    $this->base->rollback();
     unset($this->base);
   }
   
