@@ -2,7 +2,7 @@
 
 Install
 ==
- - Install from composer:
+ - Install with composer:
 
 ```bash
 $ composer require actimeo/pgproc
@@ -13,11 +13,11 @@ $ composer require actimeo/pgproc
  - Import some code in your database:
 ```bash
 $ cat vendor/actimeo/pgproc/src/sql/pgprocedures.sql | psql -h host -U login -W dbname
-$ cat vendor/actimeo/pgproc/src/plpgsql/all.sql	     | psql -h host -U login -W dbname
+$ cat vendor/actimeo/pgproc/src/plpgsql/all.sql | psql -h host -U login -W dbname
 ```
 
- - Write some procedures in your database,	for example:
+ - Write some procedures in your database, for example:
 
 ```bash
-$  cat vendor/actimeo/pgproc/tests/tests.sql | psql -h host -U login -W dbname
+$ cat vendor/actimeo/pgproc/tests/tests.sql | psql -h host -U login -W dbname
 ```
