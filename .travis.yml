@@ -17,4 +17,8 @@ addons:
 install: 
   - composer install
   - ./scripts/install.sh
-script: ./vendor/bin/phpunit tests/
+script: 
+  - mkdir -p build/logs
+  - ./vendor/bin/phpunit --coverage-clover tests/
+after_success:
+  - travis_retry php vendor/bin/coveralls -v
