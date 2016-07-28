@@ -2,7 +2,7 @@
 
 namespace actimeo\pgproc;
 
-class PgProcedures2 {
+class PgProcedures {
 
   // PG connection parameters
   private $server;

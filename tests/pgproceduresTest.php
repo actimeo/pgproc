@@ -1,11 +1,11 @@
 <?php
-require 'src/PgProcedures2.class.php';
+require 'src/PgProcedures.class.php';
 require 'src/PgProcException.class.php';
 require 'src/PgProcFunctionNotAvailableException.class.php';
 require 'src/PgSchema.class.php';
 require_once 'config.inc.php';
 
-use \actimeo\pgproc\PgProcedures2;
+use \actimeo\pgproc\PgProcedures;
 use \actimeo\pgproc\PgProcFunctionNotAvailableException;
 use \actimeo\pgproc\PgProcException;
 
@@ -31,7 +31,7 @@ class pgproceduresTest extends PHPUnit_Framework_TestCase {
     self::assertNotNull(self::$pgDatabase);
     
     // Create object
-    self::$base = new PgProcedures2 (self::$pgHost, self::$pgUser, self::$pgPass, self::$pgDatabase);
+    self::$base = new PgProcedures (self::$pgHost, self::$pgUser, self::$pgPass, self::$pgDatabase);
     self::assertNotNull(self::$base);    
 
   }
@@ -276,7 +276,7 @@ class pgproceduresTest extends PHPUnit_Framework_TestCase {
    */
   public function testCount() {
     $in = array (1, 2, 3, 4);
-    $out = self::$base->pgtests->test_integer_array_arg($in, PgProcedures2::count());
+    $out = self::$base->pgtests->test_integer_array_arg($in, PgProcedures::count());
     $this->assertSame($out, count($in));
   }
 
@@ -286,11 +286,11 @@ class pgproceduresTest extends PHPUnit_Framework_TestCase {
   public function testOrder() {
     $in = array (1, 3, 2, 4);
     $out = self::$base->pgtests->test_integer_array_arg($in, 
-						      PgProcedures2::order('test_integer_array_arg', 'DESC'));
+						      PgProcedures::order('test_integer_array_arg', 'DESC'));
     $this->assertSame(array(4, 3, 2, 1), $out);
 
     $out = self::$base->pgtests->test_integer_array_arg($in, 
-						      PgProcedures2::order('test_integer_array_arg', 'ASC'));
+						      PgProcedures::order('test_integer_array_arg', 'ASC'));
     $this->assertSame(array(1, 2, 3, 4), $out);
   }
 
@@ -300,7 +300,7 @@ class pgproceduresTest extends PHPUnit_Framework_TestCase {
   public function testLimit() {
     $in = array (1, 3, 2, 4);
     $out = self::$base->pgtests->test_integer_array_arg($in, 
-						      PgProcedures2::limit(2));
+						      PgProcedures::limit(2));
     $this->assertSame(array(1, 3), $out);
   }
 
@@ -310,7 +310,7 @@ class pgproceduresTest extends PHPUnit_Framework_TestCase {
   public function testLimitOffset() {
     $in = array (1, 3, 2, 4);
     $out = self::$base->pgtests->test_integer_array_arg($in, 
-						      PgProcedures2::limit(2, 1));
+						      PgProcedures::limit(2, 1));
     $this->assertSame(array(3, 2), $out);
   }
 
@@ -320,8 +320,8 @@ class pgproceduresTest extends PHPUnit_Framework_TestCase {
   public function testDistinct() {
     $in = array (1, 3, 2, 3, 4);
     $out = self::$base->pgtests->test_integer_array_arg($in, 
-						      PgProcedures2::distinct(),
-						      PgProcedures2::order('test_integer_array_arg'));
+						      PgProcedures::distinct(),
+						      PgProcedures::order('test_integer_array_arg'));
     $this->assertSame(array(1, 2, 3, 4), $out);
   }
 
