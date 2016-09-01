@@ -126,7 +126,7 @@ class PgProcedures {
   }
 
   private function disconnect () {
-    if ($this->handler)
+    if (is_resource($this->handler))
       pg_close ($this->handler);
   }
   
