@@ -306,6 +306,7 @@ class PgSchema {
 
     case 'enumtype':
     case 'user_right':
+    case 'group_orientation':
     case 'entity':
     case 'topics':
     case 'personview_element_type':
