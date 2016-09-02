@@ -37,7 +37,7 @@ class PgSchema {
 	array_pop ($args);
 
       // Search the argument and return types for this function
-      list ($schema, $argtypeSchemas, $argtypes, $rettype, $retset) = $this->search_pg_proc ($method, $args);
+      list ($schema, $argtypeSchemas, $argtypes, $rettypetype, $rettypename, $retset) = $this->search_pg_proc ($method, $args);
       if (!is_array ($argtypes) || !strlen ($schema)) {
 	// Function not found
 	throw new PgProcFunctionNotAvailableException ('Function '.$this->name.'.'.$method.' not available');
@@ -90,15 +90,15 @@ class PgSchema {
 	  return intval($row['count']);
 	}
 
-      } else if (is_array ($rettype)) { // Composite type
+      } else if (is_array ($rettypename)) { // Composite type
 	if ($res = $this->pgproc_query ($query)) { 
 
 	  if ($retset) { // SETOF
 	    $retsetvalue = array ();
 	    while ($row = pg_fetch_array ($res)) {
 	      $ret = array ();
-	      foreach ($rettype as $name => $subtype) {
-		$ret[$name] = $this->cast_value ($subtype, $row[$name]);
+	      foreach ($rettypename as $name => $subtype) {
+		$ret[$name] = $this->cast_value ($rettypetype, $subtype, $row[$name]);
 	      }
 	      $retsetvalue[] = $ret;
 	    }
@@ -110,8 +110,8 @@ class PgSchema {
 	  } else { // no SETOF
 	    if ($row = pg_fetch_array ($res)) {
 	      $ret = array ();
-	      foreach ($rettype as $name => $subtype) {
-		$ret[$name] = $this->cast_value ($subtype, $row[$name]);
+	      foreach ($rettypename as $name => $subtype) {
+		$ret[$name] = $this->cast_value ($rettypetype, $subtype, $row[$name]);
 	      }
 	      return $ret;
 	    }
@@ -125,7 +125,7 @@ class PgSchema {
 	  if ($retset) { // SETOF
 	    $retsetvalue = array ();
 	    while ($row = pg_fetch_array ($res)) {
-	      $retsetvalue[] = $this->cast_value ($rettype, $row[$method]);
+	      $retsetvalue[] = $this->cast_value ($rettypetype, $rettypename, $row[$method]);
 	    }
 	    if (empty ($retsetvalue))
 	      return NULL;
@@ -134,7 +134,7 @@ class PgSchema {
 
 	  } else { // no SETOF
 	    if ($row = pg_fetch_array ($res)) {
-	      return $this->cast_value ($rettype, $row[$method]);
+	      return $this->cast_value ($rettypetype, $rettypename, $row[$method]);
 	    }
 	  }
 
@@ -190,7 +190,7 @@ class PgSchema {
 	  list($argtypeschemas[], $argtypenames[]) = $this->get_pgtype_and_schema ($argtype);
 	}
 
-	if (/*$row['ret_nspname'] == 'pg_catalog' &&*/ (in_array($row['ret_typtype'], array('b', 'p', 'e')))) { // scalar type
+	if ((in_array($row['ret_typtype'], array('b', 'p', 'e')))) { // scalar type: (b)ase, (p)seudo-type, (e)num
 	  $rettypename = $row['ret_typname'];
 	  
 	} else if ($row['ret_typtype'] == 'c') { // composite type
@@ -206,13 +206,14 @@ class PgSchema {
       }
     }
     if (count ($argtypenames) == $nargs)
-      return array ($schema, $argtypeschemas, $argtypenames, $rettypename, ($row['proretset'] == 't'));
+      return array ($schema, $argtypeschemas, $argtypenames, $row['ret_typtype'], $rettypename, ($row['proretset'] == 't'));
     else
       return NULL;
   }
 
-  public function cast_value ($rettype, $value) {
+  public function cast_value ($rettypetype, $rettype, $value) {
     if (substr ($rettype, 0, 1) == '_') {
+      $subtype = $this->get_pgtype_subtype($rettype);
       if ($value === null)
 	return null;
       $v = substr ($value, 1, -1);
@@ -221,7 +222,7 @@ class PgSchema {
       
       $ret = explode (',', $v);
       foreach ($ret as &$r) {
-	$r = $this->cast_value (substr ($rettype, 1), $r);
+	$r = $this->cast_value ($subtype, substr ($rettype, 1), $r);
       }
       return $ret;
     }
@@ -303,22 +304,15 @@ class PgSchema {
 	return explode (' ', $value);
       else 
 	return;
-
-    case 'enumtype':
-    case 'user_right':
-    case 'group_orientation':
-    case 'entity':
-    case 'topics':
-    case 'personview_element_type':
-    case 'mainview_element_type':
-    case 'param':
-    case 'param_type':
-    case 'typ':
-      // user-defined enum types
-      return $value;
       
-    default: 
-      echo "Unknown type $rettype\n";
+    default: // enum type. Something else???
+      //      echo $rettype."\n";
+      if ($rettypetype == 'e')
+	return $value;
+      else {
+	echo 'unknow type '.$rettype."\n";
+	return $value;
+      }
     }
   }
 
@@ -410,9 +404,9 @@ class PgSchema {
   }
 
   public function get_pgtype_and_schema ($oid) {
-    if (isset ($this->pgtypesWithSchema[$oid]))
+    if (isset ($this->pgtypesWithSchema[$oid])) {
       return $this->pgtypesWithSchema[$oid];
-    else {
+    } else {
       $query2 = "SELECT nspname, typname FROM pg_type INNER JOIN pg_namespace on pg_type.typnamespace = pg_namespace.oid WHERE pg_type.oid=".$oid;
       if ($res2 = $this->pgproc_query ($query2)) {
 	if ($row2 = pg_fetch_array ($res2)) {
@@ -420,6 +414,16 @@ class PgSchema {
 	  $this->pgtypesWithSchema[$oid] = $ret;
 	  return $ret;
 	}
+      }
+    }
+  }
+
+  private function get_pgtype_subtype ($name) {
+    $subname = substr($name, 1);
+    $query2 = "SELECT typtype FROM pg_type WHERE pg_type.typname='".pg_escape_string($subname)."'";
+    if ($res2 = $this->pgproc_query ($query2)) {
+      if ($row2 = pg_fetch_array ($res2)) {
+	return $row2['typtype'];
       }
     }
   }
