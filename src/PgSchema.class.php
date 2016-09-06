@@ -310,7 +310,7 @@ class PgSchema {
       if ($rettypetype == 'e')
 	return $value;
       else {
-	echo 'unknow type '.$rettype."\n";
+	//	echo 'unknow type '.$rettype."\n";
 	return $value;
       }
     }
