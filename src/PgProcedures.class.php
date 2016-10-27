@@ -10,6 +10,7 @@ class PgProcedures {
   private $password;
   private $db;
   private $port;
+  public $trace;
 
   public $handler; // PG connection handler
 
@@ -24,14 +25,16 @@ class PgProcedures {
   public $date_args_format;
   public $time_args_format;
 
-  public function __construct ($server, $user, $password, $db, $port = '5432') {
+  public function __construct ($server, $user, $password, $db, $port = '5432', $trace = false) {
     $this->server = $server;
     $this->user = $user;
     $this->password = $password;
     $this->db = $db;
     $this->port = $port;
     $this->connect ();
-    
+
+    $this->trace = $trace;
+
     $this->pgtypes = array ();
 
     $this->timestamp_return_format = "d/m/Y H:i:s";

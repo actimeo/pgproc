@@ -42,6 +42,10 @@ class PgSchema {
 	// Function not found
 	throw new PgProcFunctionNotAvailableException ('Function '.$this->name.'.'.$method.' not available');
       } 
+            
+      if ($this->base->trace !== false) {
+	$this->traceCall($method);
+      }
       // Create the SQL string to call the function
       $query = "SELECT ";
       if ($distinct)
@@ -146,6 +150,21 @@ class PgSchema {
   }
 
   /* PRIVATE */
+  private function traceCall($method) {
+    $tracepath = $this->base->trace;
+    if (!file_exists($tracepath)) {
+      mkdir($tracepath);
+    }
+    $path = $tracepath . DIRECTORY_SEPARATOR . $this->name;
+    if (!file_exists($path)) {
+      mkdir ($path);
+    }
+    $cmdpath = $path . DIRECTORY_SEPARATOR . $method;
+    if (!file_exists($cmdpath)) {
+      touch($cmdpath);
+    }
+  }
+
   private static function is_order_arg ($arg) {
     return (is_array ($arg) && isset ($arg['order']));
   }
