@@ -323,6 +323,9 @@ class PgSchema {
 	return explode (' ', $value);
       else 
 	return;
+
+    case 'json':
+      return json_decode($value);
       
     default: // enum type. Something else???
       //      echo $rettype."\n";
