@@ -2,3 +2,4 @@
 DBNAME='adatabase'
 DBUSER='ausername'
 DBPASS='apassword'
+DBPORT='5432'
