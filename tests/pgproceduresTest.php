@@ -14,18 +14,21 @@ class pgproceduresTest extends PHPUnit_Framework_TestCase {
   protected function setUp() {
 
     // Get connection params
-    global $pg_host, $pg_user, $pg_pass, $pg_database;
+    global $pg_host, $pg_user, $pg_pass, $pg_database, $pg_port;
     $this->pgHost = $pg_host;
     $this->pgUser = $pg_user;
     $this->pgPass = $pg_pass;
+    $this->pgPort = $pg_port;
     $this->pgDatabase = $pg_database;
     $this->assertNotNull($this->pgHost);
     $this->assertNotNull($this->pgUser);
     $this->assertNotNull($this->pgPass);
+    $this->assertNotNull($this->pgPort);
     $this->assertNotNull($this->pgDatabase);
     
     // Create object
-    $this->base = new PgProcedures ($this->pgHost, $this->pgUser, $this->pgPass, $this->pgDatabase);
+    $this->base = new PgProcedures ($this->pgHost, $this->pgUser, $this->pgPass, $this->pgDatabase,
+				    $this->pgPort);
     $this->assertNotNull($this->base);    
     $this->base->startTransaction();
   }

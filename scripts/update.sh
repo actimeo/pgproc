@@ -11,11 +11,11 @@ function err {
 
 [ -e config.sh ] && . config.sh || err 'config.sh not found';
 
-psql <<EOF
+psql -p $DBPORT <<EOF
 DROP DATABASE IF EXISTS $DBNAME;
 CREATE DATABASE $DBNAME WITH ENCODING='UTF8' OWNER=$DBUSER;
 EOF
 
 FILES="src/sql/pgprocedures.sql src/plpgsql/all.sql tests/tests.sql"
 # Install schemas
-(echo 'BEGIN TRANSACTION; ' && cat $FILES && echo 'COMMIT; ' ) |  PGPASSWORD=$DBPASS PGOPTIONS="--client-min-messages=warning" psql -v ON_ERROR_STOP=1 -q -h localhost -U $DBUSER $DBNAME
+(echo 'BEGIN TRANSACTION; ' && cat $FILES && echo 'COMMIT; ' ) |  PGPASSWORD=$DBPASS PGOPTIONS="--client-min-messages=warning" psql -p $DBPORT -v ON_ERROR_STOP=1 -q -h localhost -U $DBUSER $DBNAME

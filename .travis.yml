@@ -10,6 +10,7 @@ env:
     - DBNAME='variation' 
     - DBUSER='deploy' 
     - DBPASS='variation'
+    - DBPORT='5432'
 services:
   - postgresql
 addons:
